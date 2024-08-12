@@ -1,24 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
+import React,{useEffect} from 'react';
+import { userSlice } from './store/redusers/UserSlice';
+import { useAppDispatch,useAppSelector } from './hooks/redux';
+
 import './App.css';
+import { fetchUsers } from './store/redusers/ActionCrietors';
+import { postApi } from './service/PostService';
+import { IPost } from './types/types';
+import Post from './components/Post';
 
 function App() {
+ /*const {users,isLoading,error} = useAppSelector(state=>state.UserReduser)
+  const dispatch = useAppDispatch()
+
+  
+  useEffect(()=>{
+     dispatch(fetchUsers())
+  },[])*/
+
+    const handlerCreate = async() => {
+    let name = prompt()
+    await createPost({name,body:name} as IPost)
+   }
+
+   const update = (post:IPost)=>{
+       updatePost(post)
+   }
+   const handlerDelete = (post:IPost)=>{
+    deletePost(post)
+   }
+  
+ const {data:posts} = postApi.useFetchAllPostQuery(15)
+ const [createPost,{}] = postApi.useCreatePostMutation()
+ const [updatePost,{}]=postApi.useUpdatePostMutation()
+ const [deletePost,{}] = postApi.useDeletePostMutation()
+ console.log()
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={handlerCreate}>Add new post</button>
+      <div className='posts'>
+     {posts && posts.map(post=>
+       <Post post={post} update={update} remove={handlerDelete}key={post.id}/>
+     )}
+     </div>
     </div>
   );
 }
