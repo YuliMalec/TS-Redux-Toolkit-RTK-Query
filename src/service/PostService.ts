@@ -43,6 +43,7 @@ export const postApi = createApi({
                 method:'DELETE',
               
             }),
+            
             invalidatesTags:['Post']
         }),
     })
